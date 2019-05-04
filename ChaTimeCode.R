@@ -2,7 +2,6 @@ library(tidyverse)
 library(ggplot2)
 library(dbplyr)
 library(MASS)
-library(ez)
 
 #Function
 ##Bhattacharyya using MASS package
@@ -124,7 +123,13 @@ L45test <- filter(df1, Participant == 45 & Session == "Test" & RewardType == "W"
 H4train <- filter(df1, Participant == 4 & Session == "Train" & RewardType == "W")
 H4test <- filter(df1, Participant == 4 & Session == "Test" & RewardType == "W")
 
-write.csv(L45train, "/behavioural-chatime/L45train.csv")
-write.csv(L45test, "/behavioural-chatime/L45test.csv")
-write.csv(H4train, "/behavioural-chatime/H4train.csv")
-write.csv(H4test, "/behavioural-chatime/H4test.csv")
+#Plotting lowest BC search pattern
+plot(L45train$X, L45train$Y, xlim=c(-15,15), ylim=c(-15,15), pch = 1, cex = 0.5, col = "red", xlab="", ylab="",main = "Lowest BC Search Pattern")
+axis(1, at = seq(-15,15, by = 5))
+par(new=TRUE)
+plot(L45test$X, L45test$Y, xlim=c(-15,15), ylim=c(-15,15), pch = 1, cex = 0.5, col = "blue",xlab="", ylab="")
+axis(1, at = seq(-15,15, by = 5))
+legend(x=-15,y=15,c("Train","Test"), title="Session",cex=.8,col=c("red","blue"),pch=c(21,21))
+
+
+  
