@@ -82,10 +82,10 @@ summary(NvsA)
 #T-test comparing Environment 
 t.test(BhattasTIZ$Bhattacharyya~BhattasTIZ$Environment)
 
-#Graphing the natural vs artifact in natural vs urban
+#### Graphing the natural vs artifact in rural vs urban ####
 plotDat <- BhattasTIZ %>%
   group_by(Environment,Item) %>%
-  summarise(Bmean=mean(Bhattacharyya),SE= qnorm(0.975)*(sd(Bhattacharyya)/sqrt(length(Bhattacharyya))))
+  summarise(Bmean=mean(Bhattacharyya),SE= sd(Bhattacharyya)/sqrt(length(Bhattacharyya)))
 
 plotDat$Environment <- as.numeric(plotDat$Environment)
 #as.numeric changes into 1 == Rural, 2 == urban because they were factors
@@ -104,3 +104,22 @@ ggplot(plotDat, aes(x=Environment, y=Bmean, fill=Item)) +
   geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),  position=position_dodge(.9),width=0.2) +
   theme_classic() +
   labs(x ="Environment", y = "Mean Bhattacharyya", fill = "Reward Type")  #change label
+
+#### Graphing Rural vs. Urban with RewardType combined ####
+plotDat2 <- BhattasTIZ %>%
+  group_by(Environment) %>%
+  summarise(Bmean=mean(Bhattacharyya),SE= sd(Bhattacharyya)/sqrt(length(Bhattacharyya)))
+
+plotDat2$Environment <- as.numeric(plotDat2$Environment)
+#as.numeric changes into 1 == Rural, 2 == urban because they were factors
+plotDat2$Environment[plotDat2$Environment==1] <- "Rural"
+plotDat2$Environment[plotDat2$Environment==2] <- "Urban"
+
+ggplot(plotDat2, aes(x=Environment, y=Bmean, fill=Environment)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values=c("lightskyblue2","lightsalmon1")) +
+#  scale_fill_brewer(palette = "Dark2") + #change colour
+  scale_y_continuous(expand = c(0,0), limits = c(0,1)) + 
+  geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),width=0.2) +
+  theme_classic() +
+  labs(x ="Environment", y = "Mean Bhattacharyya", fill="")
