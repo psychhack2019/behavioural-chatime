@@ -32,6 +32,8 @@ df <- CleanedParticipantData
 #Clean the data
 df1<-df[!(df$Session=="Test" & df$RewardFound==1),]
 
+#Remove Participant28
+df1 <- subset(df1, !Participant == 28)
 
 #MasterML <- df1
 #MasterML <- rename(MasterML,
@@ -40,19 +42,19 @@ df1<-df[!(df$Session=="Test" & df$RewardFound==1),]
 #                   BlockID = Block)
 
 
-Reward = c('F','M','W')
+RType = c('F','M','W')
 
 BhattasTIZ <- data.frame()
 
-for (p in unique(MasterML$Participant)){
-  for (i in Reward){
+for (p in unique(df1$Participant)){
+  for (i in RType){
     ##Create reward subset from Training
-    Reward <- subset(MasterML, Participant == p & RewardType == i & Session == 'Train' & RewardFound == 1)
+    Reward <- subset(df1, Participant == p & RewardType == i & Session == 'Train' & RewardFound == 1)
     #Create Movement from Test
-    Movement <- subset(MasterML, Participant == p & Session == 'Test' & Movement == 1 & TrialTime > 5 & RewardType == i)
+    Movement <- subset(df1, Participant == p & Session == 'Test' & Movement == 1 & TrialTime > 5 & RewardType == i)
     #Calculate Performance - targets found in last block of session 1
     ##Calculates the number of rewards they found in the last block
-    LastBlock <- subset(Reward, BlockID == max(Reward$BlockID))
+    LastBlock <- subset(Reward, Block == max(Reward$Block))
     trials <- unique(LastBlock$Trial)
     found<-length(LastBlock$RewardFound)
     perfound <- found/length(trials)
@@ -61,7 +63,7 @@ for (p in unique(MasterML$Participant)){
     #Calculate TIZ
     timein <- round(TIZ(Movement, Reward), digits = 4)
     dt <- data.frame("Participant" = p,"Environment"= unique(Reward$Environment), "Delay" = unique(Reward$Delay), "Item" = i, "Bhattacharyya" = bhat, "TIZ" = timein,  "%Found" = perfound)
-    MLBhattasTIZ <- rbind(MLBhattasTIZ, dt)
+    BhattasTIZ <- rbind(BhattasTIZ, dt)
   }
 }
 
