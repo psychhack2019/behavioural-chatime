@@ -27,7 +27,6 @@ TIZ <- function(movementdf, rewarddf){
 }
 
 
-
 df <- CleanedParticipantData
 
 #Clean the data
@@ -99,7 +98,7 @@ plotDat$Item[plotDat$Item=="W"] <- "Water"
 
 ggplot(plotDat, aes(x=Environment, y=Bmean, fill=Item)) + 
   geom_bar(position=position_dodge(),stat = "identity") +
-#  scale_fill_brewer(palette = "Set2") + #change colour
+  scale_fill_manual(values=c("gold1","darkseagreen1","lightskyblue2")) +
   scale_y_continuous(expand = c(0,0), limits = c(0,1)) + 
   geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),  position=position_dodge(.9),width=0.2) +
   theme_classic() +
@@ -117,7 +116,7 @@ plotDat2$Environment[plotDat2$Environment==2] <- "Urban"
 
 ggplot(plotDat2, aes(x=Environment, y=Bmean, fill=Environment)) + 
   geom_bar(stat = "identity") +
-  scale_fill_manual(values=c("lightskyblue2","lightsalmon1")) +
+  scale_fill_manual(values=c("mistyrose1","paleturquoise2")) +
 #  scale_fill_brewer(palette = "Dark2") + #change colour
   scale_y_continuous(expand = c(0,0), limits = c(0,1)) + 
   geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),width=0.2) +
