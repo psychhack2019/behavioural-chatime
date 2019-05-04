@@ -82,4 +82,25 @@ summary(NvsA)
 #T-test comparing Environment 
 t.test(BhattasTIZ$Bhattacharyya~BhattasTIZ$Environment)
 
+#Graphing the natural vs artifact in natural vs urban
+plotDat <- BhattasTIZ %>%
+  group_by(Environment,Item) %>%
+  summarise(Bmean=mean(Bhattacharyya),SE= qnorm(0.975)*(sd(Bhattacharyya)/sqrt(length(Bhattacharyya))))
 
+plotDat$Environment <- as.numeric(plotDat$Environment)
+#as.numeric changes into 1 == Rural, 2 == urban because they were factors
+plotDat$Environment[plotDat$Environment==1] <- "Rural"
+plotDat$Environment[plotDat$Environment==2] <- "Urban"
+
+plotDat$Item <-as.character(plotDat$Item)
+plotDat$Item[plotDat$Item=="F"] <- "Food"
+plotDat$Item[plotDat$Item=="M"] <- "Money"
+plotDat$Item[plotDat$Item=="W"] <- "Water"
+
+ggplot(plotDat, aes(x=Environment, y=Bmean, fill=Item)) + 
+  geom_bar(position=position_dodge(),stat = "identity") +
+#  scale_fill_brewer(palette = "Set2") + #change colour
+  scale_y_continuous(expand = c(0,0), limits = c(0,1)) + 
+  geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),  position=position_dodge(.9),width=0.2) +
+  theme_classic() +
+  labs(x ="Environment", y = "Mean Bhattacharyya", fill = "Reward Type")  #change label
