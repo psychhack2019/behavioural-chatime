@@ -69,12 +69,6 @@ for (p in unique(df1$Participant)){
 
 
 #ANOVA comparing natural vs artifact rewards in natural vs urban env
-BhattasTIZ$Participant <- factor(BhattasTIZ$Participant)
-BhattasTIZ$Environment <- factor(BhattasTIZ$Environment)
-BhattasTIZ$Item <- factor(BhattasTIZ$Item)
-stattest = ezANOVA(BhattasTIZ, dv = .(Bhattacharyya), wid = .(Participant), between = .(Environment), within = .(Item), detailed=TRUE)
-print(stattest)
-
 NvsA <- aov(Bhattacharyya ~ Environment*Item, data=BhattasTIZ)
 summary(NvsA)
 
@@ -122,3 +116,15 @@ ggplot(plotDat2, aes(x=Environment, y=Bmean, fill=Environment)) +
   geom_errorbar(aes(ymin=Bmean-SE, ymax=Bmean+SE),width=0.2) +
   theme_classic() +
   labs(x ="Environment", y = "Mean Bhattacharyya", fill="")
+
+#df of Ps with lowest/ highest B coefficient
+L45train <- filter(df1, Participant == 45 & Session == "Train" & RewardType == "W")
+L45test <- filter(df1, Participant == 45 & Session == "Test" & RewardType == "W")
+
+H4train <- filter(df1, Participant == 4 & Session == "Train" & RewardType == "W")
+H4test <- filter(df1, Participant == 4 & Session == "Test" & RewardType == "W")
+
+write.csv(L45train, "/behavioural-chatime/L45train.csv")
+write.csv(L45test, "/behavioural-chatime/L45test.csv")
+write.csv(H4train, "/behavioural-chatime/H4train.csv")
+write.csv(H4test, "/behavioural-chatime/H4test.csv")
