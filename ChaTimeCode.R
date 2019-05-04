@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggplot2)
 library(dbplyr)
 library(MASS)
+library(ez)
 
 #Function
 ##Bhattacharyya using MASS package
@@ -66,4 +67,19 @@ for (p in unique(df1$Participant)){
     BhattasTIZ <- rbind(BhattasTIZ, dt)
   }
 }
+
+
+#ANOVA comparing natural vs artifact rewards in natural vs urban env
+BhattasTIZ$Participant <- factor(BhattasTIZ$Participant)
+BhattasTIZ$Environment <- factor(BhattasTIZ$Environment)
+BhattasTIZ$Item <- factor(BhattasTIZ$Item)
+stattest = ezANOVA(BhattasTIZ, dv = .(Bhattacharyya), wid = .(Participant), between = .(Environment), within = .(Item), detailed=TRUE)
+print(stattest)
+
+NvsA <- aov(Bhattacharyya ~ Environment*Item, data=BhattasTIZ)
+summary(NvsA)
+
+#T-test comparing Environment 
+t.test(BhattasTIZ$Bhattacharyya~BhattasTIZ$Environment)
+
 
