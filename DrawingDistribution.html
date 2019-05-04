@@ -1,0 +1,78 @@
+<html>
+
+<head>
+
+    <script>
+        function run() {
+            class Scene {
+                constructor(size = { width: 500, height: 500 }, options = { zIndex: 1 }) {
+                    this.objects = [];
+                    this.tickInterval = undefined;
+                    this.width = size.width;
+                    this.height = size.height;
+                    let canvas = document.createElement('canvas');
+                    canvas.width = size.width;
+                    canvas.height = size.height;
+                    canvas.style.position = 'absolute';
+                    canvas.style.backgroundColor = 'black';
+                    canvas.style.zIndex = options.zIndex;
+                    document.body.appendChild(canvas);
+                    this.context = canvas.getContext('2d');
+                }
+                addObject(object) {
+                    this.objects.push(object);
+                }
+                render() {
+                    this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+                    this.objects.forEach(o => {
+                        o.draw(this.context);
+                    });
+                }
+            }
+
+            class Distributions {
+                constructor(params) {
+                    this.params = params;
+                }
+
+                drawlines(context, firstx, firsty, x, y){
+                    context.beginPath();
+                    context.moveTo(firstx, firsty);
+                    let i = 0;
+                    let n;
+                    for(n in x){
+                        context.lineTo(n,y[i]);
+                        i=i+1
+                    };
+                    context.stroke()
+                }
+
+                draw(context){
+                    context.fillStyle = "pink";
+                    this.drawlines(context, this.params.firstx, this.params.firsty, this.params.x, this.params.y)
+                }
+            }
+            let x = [3,5,6,7];
+            let y = [10, 11, 12, 13];
+            let test = new Distributions(10, 10, x,y);
+ 
+            
+            let scene = new Scene();
+            scene.addObject(test);
+            
+            scene.render();
+            function animateScenes(scenes) {
+                scene.render();
+                window.requestAnimationFrame(animateScenes.bind(this, scene));
+            }
+            animateScenes(scene);
+        }
+    </script>
+</head>
+
+<body onload="run()">
+
+</body>
+
+</html>
+
